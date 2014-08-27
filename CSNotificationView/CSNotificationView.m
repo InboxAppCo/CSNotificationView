@@ -122,6 +122,24 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     return note;
 }
 
+
++ (CSNotificationView*)notificationViewWithParentViewController:(UIViewController*)viewController
+                                                      tintColor:(UIColor*)tintColor
+                                                          image:(UIImage*)image
+                                                        message:(NSString*)message withTextColor:(UIColor *)textcolor
+{
+    NSParameterAssert(viewController);
+    
+    CSNotificationView* note = [[CSNotificationView alloc] initWithParentViewController:viewController];
+    note.tintColor = tintColor;
+    note.image = image;
+    note.textLabel.text = message;
+    note.textLabel.textAlignment = NSTextAlignmentCenter;
+    note.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+    note.textLabel.textColor = textcolor;
+    return note;
+}
+
 #pragma mark - lifecycle
 
 - (instancetype)initWithParentViewController:(UIViewController*)viewController
@@ -139,7 +157,10 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
             [blurView.layer addSublayer:[self blurLayer]];
             [blurView setTranslatesAutoresizingMaskIntoConstraints:NO];
             blurView.clipsToBounds = NO;
+            [blurView setAlpha:0.1f];
+
             [self insertSubview:blurView atIndex:0];
+            
             
             [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[blurView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(blurView)]];
             [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(-1)-[blurView]-(-1)-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(blurView)]];
@@ -365,6 +386,12 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
 
 #pragma mark - presentation
 
+- (void)setMessage:(NSString *)message withTextColor:(UIColor *)color{
+    self.textLabel.text = message;
+    self.textLabel.textColor = color;
+}
+
+
 - (void)setVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)())completion
 {
     if (_visible != visible) {
@@ -423,6 +450,30 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
         
     } completion:^(BOOL finished) {
         double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [weakself setVisible:NO animated:animated completion:nil];
+        });
+    }];
+}
+
+
+- (void)dismissWithStyle:(CSNotificationViewStyle)style message:(NSString *)message duration:(NSTimeInterval)duration animated:(BOOL)animated withTextColor:(UIColor *)textColor
+{
+    NSParameterAssert(message);
+    
+    __block typeof(self) weakself = self;
+    [UIView animateWithDuration:0.1 animations:^{
+        
+        weakself.showingActivity = NO;
+        weakself.image = [CSNotificationView imageForStyle:style];
+        weakself.textLabel.text = message;
+        weakself.textLabel.textAlignment = NSTextAlignmentCenter;
+        weakself.textLabel.textColor = textColor;
+        weakself.tintColor = [CSNotificationView blurTintColorForStyle:style];
+        
+    } completion:^(BOOL finished) {
+        double delayInSeconds = 0.5f;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [weakself setVisible:NO animated:animated completion:nil];

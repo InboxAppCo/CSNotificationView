@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-static CGFloat const kCSNotificationViewHeight = 50.0f;
-static CGFloat const kCSNotificationViewSymbolViewSidelength = 44.0f;
+static CGFloat const kCSNotificationViewHeight = 14.0f;
+static CGFloat const kCSNotificationViewSymbolViewSidelength = 12.0f;
 static NSTimeInterval const kCSNotificationViewDefaultShowDuration = 2.0;
 
 typedef enum {
@@ -48,14 +48,23 @@ typedef void(^CSVoidBlock)();
                                                           image:(UIImage*)image
                                                         message:(NSString*)message;
 
++ (CSNotificationView*)notificationViewWithParentViewController:(UIViewController*)viewController
+                                                      tintColor:(UIColor*)tintColor
+                                                          image:(UIImage*)image
+                                                        message:(NSString*)message
+                                                  withTextColor:(UIColor*)textcolor;
+
 #pragma mark - initialization
 
 - (instancetype)initWithParentViewController:(UIViewController*)viewController;
 
 #pragma mark - presentation
 
+- (void)setMessage:(NSString*)message withTextColor:(UIColor*)color;
+
 - (void)setVisible:(BOOL)showing animated:(BOOL)animated completion:(void (^)())completion;
 - (void)dismissWithStyle:(CSNotificationViewStyle)style message:(NSString*)message duration:(NSTimeInterval)duration animated:(BOOL)animated;
+- (void)dismissWithStyle:(CSNotificationViewStyle)style message:(NSString*)message duration:(NSTimeInterval)duration animated:(BOOL)animated withTextColor:(UIColor*)textColor;
 @property (readonly, nonatomic, getter = isShowing) BOOL visible;
 
 #pragma mark - visible properties
