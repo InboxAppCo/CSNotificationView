@@ -19,19 +19,20 @@ typedef enum {
 
 typedef void(^CSVoidBlock)();
 
+//@interface CSNotificationView : UIView
 @interface CSNotificationView : UIView
 
 #pragma mark + quick presentation
 
 + (void)showInViewController:(UIViewController*)viewController
-             style:(CSNotificationViewStyle)style
-           message:(NSString*)message;
+                       style:(CSNotificationViewStyle)style
+                     message:(NSString*)message;
 
 + (void)showInViewController:(UIViewController*)viewController
-         tintColor:(UIColor*)tintColor
-             image:(UIImage*)image
-           message:(NSString*)message
-          duration:(NSTimeInterval)duration;
+                   tintColor:(UIColor*)tintColor
+                       image:(UIImage*)image
+                     message:(NSString*)message
+                    duration:(NSTimeInterval)duration;
 
 + (void)showInViewController:(UIViewController*)viewController
                    tintColor:(UIColor*)tintColor

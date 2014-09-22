@@ -41,10 +41,10 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
 #pragma mark + quick presentation
 
 + (void)showInViewController:(UIViewController*)viewController
-         tintColor:(UIColor*)tintColor
-             image:(UIImage*)image
-           message:(NSString*)message
-          duration:(NSTimeInterval)duration
+                   tintColor:(UIColor*)tintColor
+                       image:(UIImage*)image
+                     message:(NSString*)message
+                    duration:(NSTimeInterval)duration
 {
     NSAssert(message, @"'message' must not be nil.");
     
@@ -93,16 +93,16 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
 }
 
 + (void)showInViewController:(UIViewController *)viewController
-             style:(CSNotificationViewStyle)style
-           message:(NSString *)message
+                       style:(CSNotificationViewStyle)style
+                     message:(NSString *)message
 {
     
     
     [CSNotificationView showInViewController:viewController
-                         tintColor:[CSNotificationView blurTintColorForStyle:style]
-                             image:[CSNotificationView imageForStyle:style]
-                           message:message
-                          duration:kCSNotificationViewDefaultShowDuration];
+                                   tintColor:[CSNotificationView blurTintColorForStyle:style]
+                                       image:[CSNotificationView imageForStyle:style]
+                                     message:message
+                                    duration:kCSNotificationViewDefaultShowDuration];
 }
 
 #pragma mark + creators
@@ -157,8 +157,8 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
             [blurView.layer addSublayer:[self blurLayer]];
             [blurView setTranslatesAutoresizingMaskIntoConstraints:NO];
             blurView.clipsToBounds = NO;
-            [blurView setAlpha:0.1f];
-
+            [blurView setAlpha:0.0f];
+            
             [self insertSubview:blurView atIndex:0];
             
             
@@ -187,7 +187,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
         {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(navigationControllerWillShowViewControllerNotification:) name:kCSNotificationViewUINavigationControllerWillShowViewControllerNotification object:nil];
         }
-
+        
         //Key-Value Observing
         {
             [self.parentNavigationController.navigationBar addObserver:self forKeyPath:kCSNavigationBarBoundsKeyPath options:NSKeyValueObservingOptionNew context:kCSNavigationBarObservationContext];
@@ -202,7 +202,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
                 _textLabel.textColor = [UIColor whiteColor];
                 _textLabel.backgroundColor = [UIColor clearColor];
                 _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-            
+                
                 _textLabel.numberOfLines = 2;
                 _textLabel.minimumScaleFactor = 0.6;
                 _textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -230,7 +230,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
             self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapInView:)];
             [self addGestureRecognizer:self.tapRecognizer];
         }
-
+        
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
         
     }
@@ -277,40 +277,40 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     [self removeConstraints:self.constraints];
     
     CGFloat symbolViewWidth = self.symbolView.tag != kCSNotificationViewEmptySymbolViewTag ?
-                                kCSNotificationViewSymbolViewSidelength : 0.0f;
+    kCSNotificationViewSymbolViewSidelength : 0.0f;
     CGFloat symbolViewHeight = kCSNotificationViewSymbolViewSidelength;
     
     NSDictionary* metrics =
-        @{@"symbolViewWidth": [NSNumber numberWithFloat:symbolViewWidth],
-          @"symbolViewHeight":[NSNumber numberWithFloat:symbolViewHeight]};
+    @{@"symbolViewWidth": [NSNumber numberWithFloat:symbolViewWidth],
+      @"symbolViewHeight":[NSNumber numberWithFloat:symbolViewHeight]};
     
     [self addConstraints:[NSLayoutConstraint
-        constraintsWithVisualFormat:@"H:|-(4)-[_symbolView(symbolViewWidth)]-(5)-[_textLabel]-(10)-|"
-                            options:0
-                            metrics:metrics
-                              views:NSDictionaryOfVariableBindings(_textLabel, _symbolView)]];
+                          constraintsWithVisualFormat:@"H:|-(4)-[_symbolView(symbolViewWidth)]-(5)-[_textLabel]-(10)-|"
+                          options:0
+                          metrics:metrics
+                          views:NSDictionaryOfVariableBindings(_textLabel, _symbolView)]];
     
     [self addConstraints:[NSLayoutConstraint
-        constraintsWithVisualFormat:@"V:[_symbolView(symbolViewHeight)]"
-                            options:0
-                            metrics:metrics
-                                views:NSDictionaryOfVariableBindings(_symbolView)]];
+                          constraintsWithVisualFormat:@"V:[_symbolView(symbolViewHeight)]"
+                          options:0
+                          metrics:metrics
+                          views:NSDictionaryOfVariableBindings(_symbolView)]];
     
     [self addConstraint:[NSLayoutConstraint
-                constraintWithItem:_symbolView
+                         constraintWithItem:_symbolView
                          attribute:NSLayoutAttributeBottom
                          relatedBy:NSLayoutRelationEqual
-                            toItem:self
+                         toItem:self
                          attribute:NSLayoutAttributeBottom
                          multiplier:1.0f constant:-3]];
     
     [self addConstraint:[NSLayoutConstraint
-        constraintWithItem:_textLabel
-                 attribute:NSLayoutAttributeCenterY
-                 relatedBy:NSLayoutRelationEqual
-                    toItem:_symbolView
-                 attribute:NSLayoutAttributeCenterY
-                multiplier:1.0f constant:0]];
+                         constraintWithItem:_textLabel
+                         attribute:NSLayoutAttributeCenterY
+                         relatedBy:NSLayoutRelationEqual
+                         toItem:_symbolView
+                         attribute:NSLayoutAttributeCenterY
+                         multiplier:1.0f constant:0]];
     
     [super updateConstraints];
 }
@@ -321,14 +321,14 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         //Manually adjustsFontSizeToFitWidth in iOS 6
-
+        
         CGFloat defaultPointSize, minimumPointSize;
         defaultPointSize = self.textLabel.font.pointSize;
         minimumPointSize = ceilf(defaultPointSize * self.textLabel.minimumScaleFactor);
-
+        
         UIFont *font = self.textLabel.font;
         CGSize constrainedSize = CGSizeMake(self.textLabel.frame.size.width, CGFLOAT_MAX);
-
+        
         for (NSInteger pointSize = defaultPointSize; pointSize >= minimumPointSize; pointSize--) {
             
             font = [font fontWithSize:pointSize];
@@ -391,43 +391,82 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     self.textLabel.textColor = color;
 }
 
-
 - (void)setVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)())completion
+
 {
     if (_visible != visible) {
         
-        NSTimeInterval animationDuration = animated ? 0.4 : 0.0;
-        
-        CGRect startFrame, endFrame;
-        [self animationFramesForVisible:visible startFrame:&startFrame endFrame:&endFrame];
-        
-        if (!self.superview) {
-            self.frame = startFrame;
+        if (!animated && !visible) {
             
-            if (self.parentNavigationController) {
-                [self.parentNavigationController.view insertSubview:self belowSubview:self.parentNavigationController.navigationBar];
-            } else {
-                [self.parentViewController.view addSubview:self];
+            [self removeFromSuperview];
+        }
+        
+        else{
+            
+            NSTimeInterval animationDuration = animated ? 0.4 : 0.0;
+            
+            
+            
+            CGRect startFrame, endFrame;
+            
+            [self animationFramesForVisible:visible startFrame:&startFrame endFrame:&endFrame];
+            
+            
+            
+            if (!self.superview) {
+                
+                self.frame = startFrame;
+                
+                
+                
+                if (self.parentNavigationController) {
+                    
+                    [self.parentNavigationController.view insertSubview:self belowSubview:self.parentNavigationController.navigationBar];
+                    
+                } else {
+                    
+                    [self.parentViewController.view addSubview:self];
+                    
+                }
+                
+                
+                
             }
+            
+            
+            
+            __block typeof(self) weakself = self;
+            
+            [UIView animateWithDuration:animationDuration animations:^{
+                
+                [weakself setFrame:endFrame];
+                
+            } completion:^(BOOL finished) {
+                
+                if (!visible) {
+                    
+                    [weakself removeFromSuperview];
+                    
+                }
+                
+                if (completion) {
+                    
+                    completion();
+                    
+                }
+                
+            }];
             
         }
         
-        __block typeof(self) weakself = self;
-        [UIView animateWithDuration:animationDuration animations:^{
-            [weakself setFrame:endFrame];
-        } completion:^(BOOL finished) {
-            if (!visible) {
-                [weakself removeFromSuperview];
-            }
-            if (completion) {
-                completion();
-            }
-        }];
-        
         _visible = visible;
+        
     } else if (completion) {
+        
         completion();
+        
     }
+    
 }
 
 - (void)animationFramesForVisible:(BOOL)visible startFrame:(CGRect*)startFrame endFrame:(CGRect*)endFrame
@@ -439,10 +478,10 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
 - (void)dismissWithStyle:(CSNotificationViewStyle)style message:(NSString *)message duration:(NSTimeInterval)duration animated:(BOOL)animated
 {
     NSParameterAssert(message);
-
+    
     __block typeof(self) weakself = self;
     [UIView animateWithDuration:0.1 animations:^{
-
+        
         weakself.showingActivity = NO;
         weakself.image = [CSNotificationView imageForStyle:style];
         weakself.textLabel.text = message;
@@ -462,23 +501,30 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
 {
     NSParameterAssert(message);
     
-    __block typeof(self) weakself = self;
-    [UIView animateWithDuration:0.1 animations:^{
-        
-        weakself.showingActivity = NO;
-        weakself.image = [CSNotificationView imageForStyle:style];
-        weakself.textLabel.text = message;
-        weakself.textLabel.textAlignment = NSTextAlignmentCenter;
-        weakself.textLabel.textColor = textColor;
-        weakself.tintColor = [CSNotificationView blurTintColorForStyle:style];
-        
-    } completion:^(BOOL finished) {
-        double delayInSeconds = 0.5f;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [weakself setVisible:NO animated:animated completion:nil];
-        });
-    }];
+    if (animated) {
+        __block typeof(self) weakself = self;
+        [UIView animateWithDuration:0.1 animations:^{
+            
+            weakself.showingActivity = NO;
+            weakself.image = [CSNotificationView imageForStyle:style];
+            weakself.textLabel.text = message;
+            weakself.textLabel.textAlignment = NSTextAlignmentCenter;
+            weakself.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+            weakself.textLabel.textColor = textColor;
+            
+        } completion:^(BOOL finished) {
+            double delayInSeconds = 0.5f;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [weakself setVisible:NO animated:animated completion:nil];
+            });
+        }];
+    }else{
+        self.showingActivity = NO;
+        self.image = [CSNotificationView imageForStyle:style];
+        self.textLabel.text = message;
+        [self setVisible:NO animated:animated completion:nil];
+    }
 }
 
 #pragma mark - frame calculation
@@ -505,7 +551,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     }
     
     CGFloat topLayoutGuideLength = [self topLayoutGuideLengthCalculation];
-
+    
     CGSize transformedSize = CGSizeApplyAffineTransform(viewController.view.frame.size, viewController.view.transform);
     CGRect displayFrame = CGRectMake(0, 0, fabs(transformedSize.width),
                                      kCSNotificationViewHeight + topLayoutGuideLength);
@@ -522,7 +568,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     }
     
     CGFloat topLayoutGuideLength = [self topLayoutGuideLengthCalculation];
-
+    
     CGSize transformedSize = CGSizeApplyAffineTransform(viewController.view.frame.size, viewController.view.transform);
     CGRect offscreenFrame = CGRectMake(0, -kCSNotificationViewHeight - topLayoutGuideLength,
                                        fabs(transformedSize.width),
@@ -564,7 +610,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     _symbolView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_symbolView];
     [self setNeedsUpdateConstraints];
-
+    
 }
 
 #pragma mark -- image
@@ -621,7 +667,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
 {
     if (!image) return nil;
     NSParameterAssert([tintColor isKindOfClass:[UIColor class]]);
- 
+    
     //Credits: https://gist.github.com/omz/1102091
     CGRect rect = CGRectMake(0, 0, image.size.width, image.size.height);
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, image.scale);
@@ -640,7 +686,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     UIImage* matchedImage = nil;
     switch (style) {
         case CSNotificationViewStyleSuccess:
-            matchedImage = [UIImage imageNamed:@"CSNotificationView_checkmarkIcon"];
+            //            matchedImage = [UIImage imageNamed:@"CSNotificationView_checkmarkIcon"];
             break;
         case CSNotificationViewStyleError:
             matchedImage = [UIImage imageNamed:@"CSNotificationView_exclamationMarkIcon"];
@@ -656,7 +702,8 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     UIColor* blurTintColor;
     switch (style) {
         case CSNotificationViewStyleSuccess:
-            blurTintColor = [UIColor colorWithRed:0.21 green:0.72 blue:0.00 alpha:1.0];
+            //            blurTintColor = [UIColor colorWithRed:0.21 green:0.72 blue:0.00 alpha:1.0];
+            blurTintColor = [UIColor clearColor];
             break;
         case CSNotificationViewStyleError:
             blurTintColor = [UIColor redColor];
