@@ -183,15 +183,15 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
             
         }
         
-        //Notifications
-        {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(navigationControllerWillShowViewControllerNotification:) name:kCSNotificationViewUINavigationControllerWillShowViewControllerNotification object:nil];
-        }
-        
-        //Key-Value Observing
-        {
-            [self.parentNavigationController.navigationBar addObserver:self forKeyPath:kCSNavigationBarBoundsKeyPath options:NSKeyValueObservingOptionNew context:kCSNavigationBarObservationContext];
-        }
+//        //Notifications
+//        {
+//            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(navigationControllerWillShowViewControllerNotification:) name:kCSNotificationViewUINavigationControllerWillShowViewControllerNotification object:nil];
+//        }
+//        
+//        //Key-Value Observing
+//        {
+//            [self.parentNavigationController.navigationBar addObserver:self forKeyPath:kCSNavigationBarBoundsKeyPath options:NSKeyValueObservingOptionNew context:kCSNavigationBarObservationContext];
+//        }
         
         //Content views
         {
@@ -239,15 +239,15 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kCSNotificationViewUINavigationControllerWillShowViewControllerNotification object:nil];
-    [self.parentNavigationController.navigationBar removeObserver:self forKeyPath:kCSNavigationBarBoundsKeyPath context:kCSNavigationBarObservationContext];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:kCSNotificationViewUINavigationControllerWillShowViewControllerNotification object:nil];
+//    [self.parentNavigationController.navigationBar removeObserver:self forKeyPath:kCSNavigationBarBoundsKeyPath context:kCSNavigationBarObservationContext];
 }
 
 - (void)navigationControllerWillShowViewControllerNotification:(NSNotification*)note
 {
     if (self.visible && [self.parentNavigationController isEqual:note.object]) {
         
-        __block typeof(self) weakself = self;
+        __weak typeof(self) weakself = self;
         [UIView animateWithDuration:0.1 animations:^{
             CGRect endFrame;
             [weakself animationFramesForVisible:weakself.visible startFrame:nil endFrame:&endFrame];
@@ -435,7 +435,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
             
             
             
-            __block typeof(self) weakself = self;
+            __weak typeof(self) weakself = self;
             
             [UIView animateWithDuration:animationDuration animations:^{
                 
@@ -479,7 +479,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
 {
     NSParameterAssert(message);
     
-    __block typeof(self) weakself = self;
+    __weak typeof(self) weakself = self;
     [UIView animateWithDuration:0.1 animations:^{
         
         weakself.showingActivity = NO;
@@ -502,7 +502,7 @@ static NSString * kCSNavigationBarBoundsKeyPath = @"bounds";
     NSParameterAssert(message);
     
     if (animated) {
-        __block typeof(self) weakself = self;
+        __weak typeof(self) weakself = self;
         [UIView animateWithDuration:0.1 animations:^{
             
             weakself.showingActivity = NO;
